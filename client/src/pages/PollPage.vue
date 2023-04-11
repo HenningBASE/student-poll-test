@@ -123,6 +123,7 @@
     mounted() {
       if (typeof this.$route.params.user !== 'undefined') {
         this.user = this.$route.params.user
+        console.log(process.env.BASE_URL)
         fetch(process.env.BASE_URL + '/api/joblist')
           .then(response => response.json())
           .then(jobTitles => {
