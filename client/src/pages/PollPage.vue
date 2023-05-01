@@ -59,6 +59,7 @@
       return {
         error: false,
         user: null,
+        id: null,
         jobTitles: [],
         selected: null,
         options: ['title', 'jobs', 'employers', 'wage'],
@@ -100,7 +101,8 @@
       },
       async saveChoice() {
         const data = {
-          email: this.$route.params.user,
+          email: this.user,
+          SchoolID: this.id,
           JobTitle: this.selected,
           CreatorEmail: process.env.CREATOR_EMAIL
         }
@@ -121,9 +123,9 @@
       }
     },
     mounted() {
-      if (typeof this.$route.params.user !== 'undefined') {
-        this.user = this.$route.params.user
-        console.log(process.env.BASE_URL)
+      if (typeof this.$route.query.user !== 'undefined' && typeof this.$route.query.id !== 'undefined') {
+        this.user = this.$route.query.user
+        this.id = this.$route.query.id
         fetch(process.env.BASE_URL + '/api/joblist')
           .then(response => response.json())
           .then(jobTitles => {

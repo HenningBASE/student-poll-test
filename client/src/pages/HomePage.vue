@@ -1,16 +1,14 @@
 <template>
     <div>
-      <div class="lt-md" style="width:100%; height:200px;overflow: hidden;">
-        <q-img src="~assets/BASESchool.jpg" />
-      </div>
-      <div class="gt-sm" style="width:100%; height:400px;overflow: hidden;">
-        <q-img src="~assets/BASESchool.jpg" />
+      <div style="width:100%; max-height:300px;overflow: hidden;">
+        <q-img src="~assets/Dali-DALL-E.png" />
       </div>
       <div class="row text-center">
         <div class="col-12 col-md-4">
             <div class="row">
               <div class="col">
                 <q-img src="~assets/BASELogo.jpg" width="80%" />
+                <p class="q-px-sm">Bronx Academy for Software Engineering</p>
               </div>
               <div class="col">
                 <p class="q-ma-none q-mt-md">created by:</p>
@@ -24,19 +22,56 @@
             </div>
         </div>
         <div class="col-12 col-md-8">
-          <h2 class="gt-sm text-center q-mb-md">Job Interest Poll</h2>
-          <h3 class="lt-md text-center q-mb-md">Job Interest Poll</h3>
+          <h2 class="gt-sm text-center q-my-md">Job Interest Poll</h2>
+          <h3 class="lt-md text-center q-my-md">Job Interest Poll</h3>
           <div class="container">
-            <p>Welcome to the BASE job interest poll!
+            <p class="text-left">Welcome to the BASE job interest poll!
               The purpose of this poll is to obtain information about what job you may be interested interested when you
-              enter your work life.
-              This will help us to allocate resources for your education.</p>
-            <h6 class="q-ma-none">Enter your school email to get started.</h6>
+              enter your work life.</p>
+
+
+              <q-select
+                outlined
+                v-model="selectedSchool"
+                :options="displayList"
+                label="select your high school"
+                option-value="SchoolID"
+                option-label="SchoolName"
+                use-input
+                input-debounce="0"
+                @filter="filterSchool"
+                clearable
+                class="q-mb-md"
+              >
+                <template v-slot:option="scope">
+                  <q-item
+                    v-bind="scope.itemProps"
+                    style="background: white;"
+                  >
+                    <q-item-section>
+                      <q-item-label lines="1">
+                        {{ scope.opt.SchoolName }}
+                      </q-item-label>
+                    </q-item-section>
+                  </q-item>
+                </template>
+                <template v-slot:no-option>
+                  <q-item>
+                      <q-item-section class="text-grey">
+                      No results
+                      </q-item-section>
+                  </q-item>
+                </template>
+              </q-select>
+
+
+
             <div class="row">
-              <q-input outlined v-model="email" label="Email" style="width:80%" @focus="error = false" />
+              <q-input outlined v-model="email" label="enter your email address" style="width:80%" @focus="error = false" />
               <q-btn color="primary" class="q-ml-md" @click="go">Go</q-btn>
             </div>
-            <p v-if="error" class="text-red text-bold">Email address is invalid.</p>
+            <p v-if="schoolError" class="text-red text-bold">Please select your school.</p>
+            <p v-if="emailError" class="text-red text-bold">Email address is invalid.</p>
           </div>
         </div>
       </div>
@@ -47,8 +82,26 @@
    export default {
     data() {
       return {
-        error: false,
-        email: ''
+        email: '',
+        emailError: false,
+        schoolError: false,
+        loading: false,
+        selectedSchool: null,
+        schoolList: [],
+        displayList: [],
+
+      }
+    },
+    watch: {
+      selectedSchool() {
+        if(this.selectedSchool !== null){
+          this.schoolError = false
+        }
+      },
+      email() {
+        if(this.email.length > 0){
+          this.emailError = false
+        }
       }
     },
     computed: {
@@ -63,13 +116,38 @@
       }
     },
     methods: {
+      filterSchool(val, update){
+            if (val === '') {
+                update(() => {
+                    this.displayList = this.schoolList
+                })
+                return
+            }
+            update(() => {
+                const needle = val.toLowerCase()
+                this.displayList = this.schoolList.filter(rec => rec.SchoolName.toLowerCase().indexOf(needle) > -1)
+            })
+        },
       go() {
         if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(this.email)) {
-          this.$router.push({ name: 'Poll', params: { user: this.email } })
+          if(this.selectedSchool !== null ){
+            this.$router.push({ name: 'Poll', query: { user: this.email, id: this.selectedSchool.SchoolID } })
+          }else{
+            this.schoolError = true
+          }
         } else {
-          this.error = true
+          this.emailError = true
         }
       }
+    },
+    mounted() {
+        // load school list for select drop down box
+        fetch(process.env.BASE_URL + '/api/school-list')
+        .then(response => response.json())
+        .then(schoolList => {
+            this.schoolList = schoolList
+            this.displayList = this.schoolList
+        })
     }
    }
    </script>
