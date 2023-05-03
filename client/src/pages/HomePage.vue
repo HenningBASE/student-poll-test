@@ -27,7 +27,7 @@
           <div class="container">
             <p class="text-left">Welcome to the BASE job interest poll!
               The purpose of this poll is to obtain information about what job you may be interested interested when you
-              enter your work life.</p>
+              enter your work life. <span class="text-bold">This poll is anonymous.</span></p>
 
 
               <q-select
