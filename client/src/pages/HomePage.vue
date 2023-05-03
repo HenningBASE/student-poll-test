@@ -22,8 +22,8 @@
             </div>
         </div>
         <div class="col-12 col-md-8">
-          <h2 class="gt-sm text-center q-my-md">Job Interest Poll</h2>
-          <h3 class="lt-md text-center q-my-md">Job Interest Poll</h3>
+          <h2 class="gt-sm text-center q-my-md">NYC Job Interest Poll</h2>
+          <h3 class="lt-md text-center q-my-md">NYC Job Interest Poll</h3>
           <div class="container">
             <p class="text-left">Welcome to the BASE job interest poll!
               The purpose of this poll is to obtain information about what job you may be interested interested when you
