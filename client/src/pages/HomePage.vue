@@ -67,7 +67,7 @@
 
 
             <div class="row">
-              <q-input outlined v-model="email" label="enter your email address" style="width:80%" @focus="error = false" />
+              <q-input outlined v-model="email" label="enter your email address" style="width:80%" @focus="error = false" @keyup.enter="go"/>
               <q-btn color="primary" class="q-ml-md" @click="go">Go</q-btn>
             </div>
             <p v-if="schoolError" class="text-red text-bold">Please select your school.</p>
